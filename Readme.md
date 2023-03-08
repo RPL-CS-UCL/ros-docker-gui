@@ -166,85 +166,64 @@ _Important Remark_:
 
 - See also [this section](#other-options) for other options.
 
+
+#### Proceed only if `nvidia-smi` works on the host computer (the nvidia drivers are correctly installed on the host machine)
+
+if it is not the case install the nvidia driver on the host machine before proceeding
+
 ## NVIDIA Graphics Card
-For machines that are using NVIDIA graphics cards we need to have the [nvidia-docker-plugin].
+For machines that are using NVIDIA graphics cards we need to have the [nvidia-container-toolkit].
 
 __IMPORTANT:__ This repo supports `nvidia-docker` version `2.x`!!!
 
+in order to isntall nvidia-container-toolkit follow the instructions:
+```
+# set the repository containing nvidia-container-toolkit
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+      && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+      && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+            sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+            
+# update the host machine repository
+apt update
+
+# install nvidia-container-toolkit
+apt -y install nvidia-container-toolkit
+
+# restart docker deamon
+systemctl restart docker
+```
+to test if the container started from an nvidia-image is correctly interfacing with the nvidia gpu after building one of the nvidia-based image and after the container is running (using the example_contaiener_run_nvidia properly tweaked) run this command:
+```
+nvidia-smi
+```
+
+if the output obtained is something like:
+```
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.85.05    Driver Version: 525.85.05    CUDA Version: N/A      |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA GeForce ...  Off  | 00000000:01:00.0 Off |                  N/A |
+| N/A   40C    P0    N/A /  35W |      6MiB /  4096MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+```
+the containert is correctly using the nvidia gpu
+
 > For `nvidia-docker-v1.0` support, [check the corresponding branch](https://github.com/turlucode/ros-docker-gui/tree/nvidia-docker-v1.0)
 
-### Install nvidia-docker-plugin 
-Assuming the NVIDIA drivers and Docker® Engine are properly installed (see 
-[installation](https://github.com/NVIDIA/nvidia-docker/wiki/Installation))
-
-#### _Ubuntu 14.04/16.04/18.04, Debian Jessie/Stretch_
-```sh
-# If you have nvidia-docker 1.0 installed: we need to remove it and all existing GPU containers
-docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f
-sudo apt-get purge -y nvidia-docker
-
-# Add the package repositories
-curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
-  sudo apt-key add -
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
-  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-sudo apt-get update
-
-# Install nvidia-docker2 and reload the Docker daemon configuration
-sudo apt-get install -y nvidia-docker2
-sudo pkill -SIGHUP dockerd
-
-# Test nvidia-smi with the latest official CUDA image
-docker run --runtime=nvidia --rm nvidia/cuda:9.0-base nvidia-smi
-```
-
-#### _CentOS 7 (docker-ce), RHEL 7.4/7.5 (docker-ce), Amazon Linux 1/2_
-
-If you are __not__ using the official `docker-ce` package on CentOS/RHEL, use the next section.
-
-```sh
-# If you have nvidia-docker 1.0 installed: we need to remove it and all existing GPU containers
-docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f
-sudo yum remove nvidia-docker
-
-# Add the package repositories
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.repo | \
-  sudo tee /etc/yum.repos.d/nvidia-docker.repo
-
-# Install nvidia-docker2 and reload the Docker daemon configuration
-sudo yum install -y nvidia-docker2
-sudo pkill -SIGHUP dockerd
-
-# Test nvidia-smi with the latest official CUDA image
-docker run --runtime=nvidia --rm nvidia/cuda:9.0-base nvidia-smi
-```
-
-If `yum` reports a conflict on `/etc/docker/daemon.json` with the `docker` package, you need to use the next section instead.
-
-For `docker-ce` on `ppc64le`, look at the [FAQ](https://github.com/nvidia/nvidia-docker/wiki/Frequently-Asked-Questions#do-you-support-powerpc64-ppc64le).
-
-#### _Arch-linux_
-```sh
-# Install nvidia-docker and nvidia-docker-plugin
-# If you have nvidia-docker 1.0 installed: we need to remove it and all existing GPU containers
-docker volume ls -q -f driver=nvidia-docker | xargs -r -I{} -n1 docker ps -q -a -f volume={} | xargs -r docker rm -f
-
-sudo rm /usr/bin/nvidia-docker /usr/bin/nvidia-docker-plugin
-
-# Install nvidia-docker2 from AUR and reload the Docker daemon configuration
-yaourt -S aur/nvidia-docker
-sudo pkill -SIGHUP dockerd
-
-# Test nvidia-smi with the latest official CUDA image
-docker run --runtime=nvidia --rm nvidia/cuda:9.0-base nvidia-smi
-```
-
-#### Proceed only if `nvidia-smi` works
-
-If the `nvidia-smi` test was successful you may proceed. Otherwise please visit the 
-[official NVIDIA support](https://github.com/NVIDIA/nvidia-docker).
 
 #### Remarks & Troubleshooting
 
