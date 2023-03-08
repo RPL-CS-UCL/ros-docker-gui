@@ -6,6 +6,13 @@ LABEL Description="ROS-Noetic-Desktop with CUDA 11.4.2 and cuDNN 8 support (Ubun
 # Install packages without prompting the user to answer any questions
 ENV DEBIAN_FRONTEND noninteractive 
 
+RUN apt-get update && apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+python3-catkin-tools \
+ros-noetic-grid-map-msgs \
+ros-noetic-grid-map-core \
+ros-noetic-grid-map-ros \
+ros-noetic-sbpl 
+
 # CUDNN Runtime-packages
 ENV NV_CUDNN_VERSION 8.2.4.15
 ENV NV_CUDNN_PACKAGE "libcudnn8=$NV_CUDNN_VERSION-1+cuda11.4"

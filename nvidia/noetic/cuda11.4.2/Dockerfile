@@ -6,6 +6,14 @@ LABEL Description="ROS-Noetic-Desktop with CUDA 11.4.2 support (Ubuntu 20.04)" V
 # Install packages without prompting the user to answer any questions
 ENV DEBIAN_FRONTEND noninteractive 
 
+RUN apt-get update && apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+python3-catkin-tools \
+ros-noetic-grid-map-msgs \
+ros-noetic-grid-map-core \
+ros-noetic-grid-map-ros \
+ros-noetic-sbpl 
+
+
 RUN wget -nv https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb && \
     dpkg -i cuda-keyring_1.0-1_all.deb && \
     rm cuda-keyring_1.0-1_all.deb
