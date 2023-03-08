@@ -167,9 +167,55 @@ _Important Remark_:
 - See also [this section](#other-options) for other options.
 
 ## NVIDIA Graphics Card
-For machines that are using NVIDIA graphics cards we need to have the [nvidia-docker-plugin].
+For machines that are using NVIDIA graphics cards we need to have the [nvidia-container-toolkit].
 
 __IMPORTANT:__ This repo supports `nvidia-docker` version `2.x`!!!
+
+in order to isntall nvidia-container-toolkit follow the instructions:
+```
+# set the repository containing nvidia-container-toolkit
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+      && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+      && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+            sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+            
+# update the host machine repository
+apt update
+
+# install nvidia-container-toolkit
+apt -y install nvidia-container-toolkit
+
+# restart docker deamon
+systemctl restart docker
+```
+to test if the container started from an nvidia-image is correctly interfacing with the nvidia gpu after building one of the nvidia-based image and after the container is running (using the example_contaiener_run_nvidia properly tweaked) run this command:
+```
+nvidia-smi
+```
+
+if the output obtained is something like:
+```
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.85.05    Driver Version: 525.85.05    CUDA Version: N/A      |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA GeForce ...  Off  | 00000000:01:00.0 Off |                  N/A |
+| N/A   40C    P0    N/A /  35W |      6MiB /  4096MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+```
+the containert is correctly using the nvidia gpu
 
 > For `nvidia-docker-v1.0` support, [check the corresponding branch](https://github.com/turlucode/ros-docker-gui/tree/nvidia-docker-v1.0)
 
