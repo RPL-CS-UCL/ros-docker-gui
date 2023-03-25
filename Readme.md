@@ -306,7 +306,7 @@ If you have a virtual device node like `/dev/video0`, e.g. a compatible usb came
 
 # Visual Studio Code
 
-You can have the option to create a new container that contais [Visual Studio Code](https://code.visualstudio.com/). This allows to use Visual Studio Code wihtin the ROS docker image and in turn use it for development and debugging.
+You can have the option to create a new container that contains [Visual Studio Code](https://code.visualstudio.com/). This allows to use Visual Studio Code wihtin the ROS docker image and in turn use it for development and debugging.
 
 ## Create image
 
