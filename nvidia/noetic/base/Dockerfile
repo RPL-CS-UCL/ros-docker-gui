@@ -81,6 +81,7 @@ ros-noetic-grid-map-msgs \
 ros-noetic-grid-map-core \
 ros-noetic-grid-map-ros \
 ros-noetic-sbpl \
+ros-noetic-navigation \
 ros-noetic-geodesy && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 

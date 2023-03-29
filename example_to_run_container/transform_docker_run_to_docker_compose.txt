@@ -1,0 +1,22 @@
+https://www.composerize.com/
+
+when using the website you need to be careful becasue some parameters are not copied inside the docker-compose.yaml
+and you need to add them manually 
+
+for example the property --gpus all that activate the nvidia hardware inside the container can be ported in the 
+docker-compose.yaml using
+
+ deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+              
+this command need to be positioned as the last one otherwise it could break the yaml structure
+              
+or --ipc=host for some reason is not included in the docker-compose.yaml even though it is a simple single parameter
+in the yaml file suck as 
+
+ipc: host  

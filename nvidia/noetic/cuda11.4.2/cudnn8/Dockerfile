@@ -11,7 +11,8 @@ python3-catkin-tools \
 ros-noetic-grid-map-msgs \
 ros-noetic-grid-map-core \
 ros-noetic-grid-map-ros \
-ros-noetic-sbpl 
+ros-noetic-sbpl \
+ros-noetic-navigation 
 
 # CUDNN Runtime-packages
 ENV NV_CUDNN_VERSION 8.2.4.15

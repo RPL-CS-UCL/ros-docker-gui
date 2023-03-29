@@ -1,0 +1,24 @@
+version: '3.3'
+services:
+    ros-noetic:
+        privileged: true
+        network_mode: host
+        ipc: host
+        volumes:
+            - '/var/run/docker.sock:/tmp/docker.sock:ro'
+            - '/tmp/.X11-unix:/tmp/.X11-unix'
+            - '$HOME/.Xauthority:/root/.Xauthority'
+            - '/home/robohikeuser/footstep_planner_ws:/home/footstep_planner_ws'
+            - '/home/robohikeuser/.vscodeDocker:/home/.vscode'
+            - '/home/robohikeuser/.config/CodeDocker:/home/.config/Code'
+        environment:
+            - DISPLAY=$DISPLAY
+            - XAUTHORITY=/root/.Xauthority
+        image: 'turlucode/ros-noetic:nvidia-vscode'
+        deploy:
+            resources:
+                 reservations:
+                     devices:
+                         - driver: nvidia 
+                           count: 1
+                           capabilities: [gpu]
