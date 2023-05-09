@@ -218,3 +218,13 @@ tools_cannelloni: ## [Tools]  Create a new image that contains Cannelloni. Use i
 tools_cmake: ## [Tools]  Create a new image that contains CMake. Use it as "make tools_cmake <existing_docker_image>".
 	docker build --build-arg="ARG_FROM=$(RUN_ARGS)" -t $(RUN_ARGS)-cmake tools/cmake
 	@printf "\033[92mDocker Image: $(RUN_ARGS)-cmake\033[0m\n"
+	
+# ANACONDA
+
+anaconda_base: ## [ANACONDA] Create a new image that contains Anaconda. Use it as "make anaconda_base".
+	docker build -t valerio/anaconda-base:cpu -f anaconda/base/Dockerfile .
+	@printf "\n\033[92mDocker Image: valerio/anaconda-base:cpu\033[0m\n"
+	
+anaconda_horizon:  ## [ANACONDA] create anaconda environment for anaconda horizon with robostack. "make anaconda_horizon" .
+	docker build -t valerio/anaconda-hori:cpu -f anaconda/noetic/horizon/Dockerfile .
+	@printf "\n\033[92mDocker Image: valerio/anaconda-hori:cpu\033[0m\n"
