@@ -220,7 +220,7 @@ if the output obtained is something like:
 |=============================================================================|
 +-----------------------------------------------------------------------------+
 ```
-the containert is correctly using the nvidia gpu
+the container is correctly using the nvidia gpu
 
 > For `nvidia-docker-v1.0` support, [check the corresponding branch](https://github.com/turlucode/ros-docker-gui/tree/nvidia-docker-v1.0)
 

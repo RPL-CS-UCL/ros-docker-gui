@@ -1,8 +1,9 @@
-FROM continuumio/anaconda3
+FROM ubuntu:20.04
 
 MAINTAINER Athanasios Tasoglou <athanasios@tasoglou.net>
 LABEL Description="ROS-Melodic-Desktop (Ubuntu 20.04)" Vendor="TurluCode" Version="1.0"
 LABEL com.turlucode.ros.version="noetic"
+
 
 # Install packages without prompting the user to answer any questions
 ENV DEBIAN_FRONTEND noninteractive 
@@ -27,10 +28,12 @@ software-properties-common \
 gdb valgrind && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
+
 # Install cmake 3.22.1
 RUN git clone https://github.com/Kitware/CMake.git && \
 cd CMake && git checkout tags/v3.22.1 && ./bootstrap --parallel=8 && make -j8 && make install && \
 cd .. && rm -rf CMake
+
 
 # Install tmux 3.2
 RUN apt-get update && apt-get install -y automake autoconf pkg-config libevent-dev libncurses5-dev bison && \
@@ -53,6 +56,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en  
 ENV LC_ALL en_US.UTF-8
 
+
 # Install OhMyZSH
 RUN apt-get update && apt-get install -y zsh && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
@@ -68,9 +72,30 @@ RUN mkdir -p /root/.config/terminator/
 COPY assets/terminator_config /root/.config/terminator/config 
 COPY assets/terminator_background.png /root/.config/terminator/background.png
 
+# Install miniconda
+ENV CONDA_DIR /opt/conda
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+     /bin/bash ~/miniconda.sh -b -p /opt/conda
+
+# Put conda in path so we can use conda activate
+ENV PATH="${PATH}:$CONDA_DIR/bin"
+ARG PATH="${PATH}:$CONDA_DIR/bin"
+
+# initialize conda both for bash and zsh
+RUN conda init bash
+RUN conda init zsh
+
 # Entry script - This will also run terminator
 COPY assets/entrypoint_setup.sh /
 ENTRYPOINT ["/entrypoint_setup.sh"]
 
 # ---
 CMD ["terminator"]
+
+
+
+
+
+
+
+

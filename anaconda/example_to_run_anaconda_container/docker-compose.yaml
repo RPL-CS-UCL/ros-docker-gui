@@ -1,0 +1,28 @@
+#$UID  = id -u
+#$UIDN = id -un
+#$GID  = id -g
+#$GIDN = id -gn
+# IMPORTANT!!! in order to run this docker-compose.yaml it require to source the file with all the necessary environmental variables
+# by doing source ./env.bash
+version: '3.3'
+services:
+    ros-noetic:
+        privileged: true
+        network_mode: host
+        ipc: host
+        volumes:
+            - '/var/run/docker.sock:/tmp/docker.sock:ro'
+            - '/tmp/.X11-unix:/tmp/.X11-unix'
+            - '$HOME/.Xauthority:/root/.Xauthority'
+            - '/home/${UIDDN}/.vscodeDocker:/home/${UIDDN}/.vscode'
+            - '/home/${UIDDN}/.config/CodeDocker:/home/${UIDDN}/.config/Code'
+            - '/home/${UIDDN}/git/horizon:/home/${UIDDN}/devel/horizon'
+        environment:
+            - DISPLAY=${DISPLAY}
+            - XAUTHORITY=/root/.Xauthority
+            - DOCKER_USER_NAME=${UIDDN}
+            - DOCKER_USER_ID=${UIDD}
+            - DOCKER_USER_GROUP_NAME=${GIDDN}
+            - DOCKER_USER_GROUP_ID=${GIDD}
+        image: 'valerio/anaconda-hori:cpu'
+        

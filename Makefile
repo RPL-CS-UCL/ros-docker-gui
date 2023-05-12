@@ -226,5 +226,5 @@ anaconda_base: ## [ANACONDA] Create a new image that contains Anaconda. Use it a
 	@printf "\n\033[92mDocker Image: valerio/anaconda-base:cpu\033[0m\n"
 	
 anaconda_horizon:  ## [ANACONDA] create anaconda environment for anaconda horizon with robostack. "make anaconda_horizon" .
-	docker build -t valerio/anaconda-hori:cpu -f anaconda/noetic/horizon/Dockerfile .
+	docker build -t valerio/anaconda-hori:cpu -f anaconda/horizon/Dockerfile .
 	@printf "\n\033[92mDocker Image: valerio/anaconda-hori:cpu\033[0m\n"
